@@ -14,17 +14,9 @@ void get_URL( const string& host, const string& path )
   client.connect(Address(host,"http"));
   vector<string> req;
 
-  string a = "GET "+path+" HTTP/1.1\r\n";
-  //cout<<a;
+  string a = "GET "+path+" HTTP/1.1\r\n"+"Host: "+host+"\r\n"+"Connection: close\r\n"+"\r\n";
   req.push_back(a);
-  a = "Host: "+host+"\r\n";
-  //cout<<a;
-  req.push_back(a);
-  a = "Connection: close\r\n";
- // cout<<a;
-  req.push_back(a);
-  req.push_back("\r\n");
-
+  
   client.write(req);
   string ret;
 
