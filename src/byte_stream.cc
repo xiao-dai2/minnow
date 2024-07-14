@@ -1,65 +1,73 @@
 #include "byte_stream.hh"
-
+#include<iostream>
 using namespace std;
 
 ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) {}
 
 bool Writer::is_closed() const
 {
-  // Your code here.
-  return {};
+  
+  return is_close;
 }
 
 void Writer::push( string data )
 {
-  // Your code here.
-  (void)data;
+  auto red = available_capacity();
+  if(data.size()<=red){
+    for(auto c:data)
+    str.push_back(c);
+    pushed += data.size();
+  }
+  else set_error();
+  
   return;
 }
-
+  //
 void Writer::close()
 {
-  // Your code here.
+  is_close = true;
 }
 
 uint64_t Writer::available_capacity() const
 {
-  // Your code here.
-  return {};
+  return capacity_-str.size();
 }
 
 uint64_t Writer::bytes_pushed() const
 {
-  // Your code here.
-  return {};
+  return pushed;
 }
 
 bool Reader::is_finished() const
 {
-  // Your code here.
-  return {};
+  return is_close&&str.size()==0;
 }
 
 uint64_t Reader::bytes_popped() const
 {
-  // Your code here.
-  return {};
+  return poped;
 }
 
 string_view Reader::peek() const
-{
-  // Your code here.
-  return {};
+{  
+  string ret{};
+  ret.assign(str.begin(),str.end());
+
+  return string_view(ret.c_str()); 
 }
 
 void Reader::pop( uint64_t len )
 {
-  // Your code here.
-  (void)len;
+    uint64_t cnt=0;
+    while (cnt<len)
+    {
+      str.pop_front();
+      cnt++;
+    }
+    poped += len;
 }
 
 uint64_t Reader::bytes_buffered() const
 {
-  // Your code here.
-  return {};
+  return str.size();
 }
