@@ -13,13 +13,9 @@ bool Writer::is_closed() const
 void Writer::push( string data )
 {
   auto red = available_capacity();
-  if(data.size()<=red){
-    for(auto c:data)
-    str.push_back(c);
-    pushed += data.size();
-  }
-  else set_error();
-  
+  auto add = min(red,data.size());
+  for(uint64_t i=0;i<add;i++)  str.push_back(data[i]);
+  pushed += add;
   return;
 }
   //
@@ -50,20 +46,18 @@ uint64_t Reader::bytes_popped() const
 
 string_view Reader::peek() const
 {  
-  string ret{};
-  ret.assign(str.begin(),str.end());
-
-  return string_view(ret.c_str()); 
+  return string_view(str);
 }
 
 void Reader::pop( uint64_t len )
 {
-    uint64_t cnt=0;
-    while (cnt<len)
-    {
-      str.pop_front();
-      cnt++;
+  //  uint64_t cnt=0;
+    auto rec = bytes_buffered();
+    if(len>rec){
+      set_error();
+      return ;
     }
+    str.erase(0,len);
     poped += len;
 }
 

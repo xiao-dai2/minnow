@@ -27,7 +27,7 @@ protected:
   uint64_t capacity_;
   bool error_ {};
   bool is_close {};
-  std::deque<char> str{};
+  std::string str{};
   uint64_t pushed{};
   uint64_t poped{};
 };
@@ -53,7 +53,6 @@ public:
   uint64_t bytes_buffered() const; // Number of bytes currently buffered (pushed and not popped)
   uint64_t bytes_popped() const;   // Total number of bytes cumulatively popped from stream
 };
-
 /*
  * read: A (provided) helper function thats peeks and pops up to `len` bytes
  * from a ByteStream Reader into a string;
