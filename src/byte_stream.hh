@@ -1,9 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include <queue>
 #include <string>
 #include <string_view>
-#include <queue>
 using namespace std;
 class Reader;
 class Writer;
@@ -27,9 +27,9 @@ protected:
   uint64_t capacity_;
   bool error_ {};
   bool is_close {};
-  std::string str{};
-  uint64_t pushed{};
-  uint64_t poped{};
+  std::string str {};
+  uint64_t pushed {};
+  uint64_t poped {};
 };
 
 class Writer : public ByteStream

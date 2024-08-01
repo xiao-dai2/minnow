@@ -9,26 +9,24 @@ using namespace std;
 
 void get_URL( const string& host, const string& path )
 {
-  //cerr << "Function called: get_URL(" << host << ", " << path << ")\n";
+  // cerr << "Function called: get_URL(" << host << ", " << path << ")\n";
   TCPSocket client = TCPSocket();
-  client.connect(Address(host,"http"));
+  client.connect( Address( host, "http" ) );
   vector<string> req;
 
-  string a = "GET "+path+" HTTP/1.1\r\n"+"Host: "+host+"\r\n"+"Connection: close\r\n"+"\r\n";
-  req.push_back(a);
-  
-  client.write(req);
+  string a = "GET " + path + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n" + "\r\n";
+  req.push_back( a );
+
+  client.write( req );
   string ret;
 
-  client.read(ret);
+  client.read( ret );
 
-  while(ret!=""){
-     cout<<ret;
-     client.read(ret);
+  while ( ret != "" ) {
+    cout << ret;
+    client.read( ret );
   }
   client.close();
-
-
 }
 
 int main( int argc, char* argv[] )
