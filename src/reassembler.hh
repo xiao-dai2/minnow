@@ -1,6 +1,9 @@
 #pragma once
 
 #include "byte_stream.hh"
+#include<unordered_set>
+#include<queue>
+#include<vector>
 
 class Reassembler
 {
@@ -42,4 +45,10 @@ public:
 
 private:
   ByteStream output_; // the Reassembler writes to this ByteStream
+  uint64_t byte_store{};
+  uint64_t expected_index{};
+  uint64_t end_index{};
+  unordered_set<uint64_t> dict{};
+  priority_queue<pair<uint64_t,string>,vector<pair<uint64_t,string>>,greater<>> q{};
+
 };
