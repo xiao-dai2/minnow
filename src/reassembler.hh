@@ -45,7 +45,6 @@ public:
 
 private:
   ByteStream output_; // the Reassembler writes to this ByteStream
- // uint64_t byte_store {};
   uint64_t expected_index {};
   uint64_t end_index =-1;
   vector<pair<uint64_t,uint64_t>> dict {};

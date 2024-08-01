@@ -31,15 +31,13 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
       str = str.substr(expected_index-id);
       id = expected_index;
       expected_index += str.size();
-   //   byte_store -= str.size();
+  
       auto pre = output_.writer().available_capacity();
       output_.writer().push(str);
-      //dict.erase(id);
       ava_capacity = output_.writer().available_capacity();
       if(ava_capacity==0){
         q = qq;
         dict.clear();
-       //byte_store=0;
         expected_index -= str.size();
         expected_index += pre;
         break;
@@ -57,7 +55,7 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
     }
     q.push( { first_index, data } );
     dict.push_back({first_index,min(first_index+data.size(),expected_index+ava_capacity)});
-    //byte_store += siz;
+  
   }
   if ( expected_index == end_index)
     output_.writer().close();
