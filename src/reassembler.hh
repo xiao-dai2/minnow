@@ -42,7 +42,8 @@ public:
 
   // Access output stream writer, but const-only (can't write from outside)
   const Writer& writer() const { return output_.writer(); }
-
+  uint64_t get_exp()const {return expected_index; }
+ 
 private:
   ByteStream output_; // the Reassembler writes to this ByteStream
   uint64_t expected_index {};
