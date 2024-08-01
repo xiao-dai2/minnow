@@ -17,6 +17,7 @@ void Writer::push( string data )
   for ( uint64_t i = 0; i < add; i++ )
     str.push_back( data[i] );
   pushed += add;
+ // cout<<pushed<<endl;//
   return;
 }
 //
