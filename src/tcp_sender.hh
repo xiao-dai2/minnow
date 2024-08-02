@@ -24,7 +24,7 @@ public:
   {}
 
   /* Generate an empty TCPSenderMessage */
-  TCPSenderMessage make_empty_message() /*const*/;
+  TCPSenderMessage make_empty_message() const;
 
   /* Receive and process a TCPReceiverMessage from the peer's receiver */
   void receive( const TCPReceiverMessage& msg );
@@ -61,6 +61,8 @@ private:
   Wrap32 nextseq_;
   std::optional<Wrap32> ackno_ {};
   bool is_first {};
+  bool is_finish {};
+  bool over {};
 
   deque<TCPSenderMessage> q {};
 };
