@@ -27,9 +27,8 @@ public:
   const Writer& writer() const { return reassembler_.writer(); }
 
 private:
-  Reassembler reassembler_; 
- // Wrap32 raw_value{0};
-  uint64_t ackno{};
-  std::optional<Wrap32> raw_value{};
-
+  Reassembler reassembler_;
+  // Wrap32 raw_value{0};
+  uint64_t ackno {};
+  std::optional<Wrap32> raw_value {};
 };
