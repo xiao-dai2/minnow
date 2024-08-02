@@ -29,7 +29,6 @@ struct TCPSenderMessage
   bool SYN {};
   std::string payload {};
   bool FIN {};
-
   bool RST {};
 
   // How many sequence numbers does this segment use?
