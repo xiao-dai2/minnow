@@ -18,46 +18,55 @@ void TCPSender::push( const TransmitFunction& transmit )
 {
   auto len = TCPConfig::MAX_PAYLOAD_SIZE;
   TCPSenderMessage tmp;
+  auto cap = window_size_ - ( nextseq_.get_raw() - ( *ackno_ ).get_raw() );
   len = min( len, window_size_ - ( nextseq_.get_raw() - ( *ackno_ ).get_raw() ) );
+  
+  if ( window_size_ == 0 && is_first) return;
+  //   len = 1;
 
-  if ( window_size_ == 0 )
-    len = 1;
+  if ( over )  return; //
 
-  if ( over )
-    return; //
-  if ( !is_first ) {
-    is_first = true;
-    tmp.SYN = true;
-    tmp.seqno = nextseq_;
-  } else {
-    auto lent = min( len, input_.reader().bytes_buffered() );
-    tmp.seqno = nextseq_;
+  while (len&&!over)
+  {
+      uint64_t lent=0;
+      if ( !is_first ) {
+        is_first = true;
+        tmp.SYN = true;
+        tmp.seqno = nextseq_;
+      } else {
+        
+        lent = min( len, input_.reader().bytes_buffered() );
+        tmp.seqno = nextseq_;
 
-    read( input_.reader(), lent, tmp.payload );
-    is_finish = input_.reader().is_finished();
+        read( input_.reader(), lent, tmp.payload );
+        is_finish = input_.reader().is_finished();
+        
+        if ( is_finish && cap - lent )
+          goto ext;
+        if ( lent == 0 ) {
+          return; // attention FIN flag bug!!!
+        }
+      }
+      is_finish = input_.reader().is_finished();
+    ext:
+      if ( is_finish && cap - lent  ) {
+        tmp.FIN = true;
+        over = true;
+      }
+      nextseq_ = nextseq_ + tmp.sequence_length();
 
-    if ( is_finish && len - lent )
-      goto ext;
-    if ( lent == 0 ) {
-      return; // attention FIN flag bug!!!
-    }
-  }
-  is_finish = input_.reader().is_finished();
-ext:
-  if ( is_finish ) {
-    tmp.FIN = true;
-    over = true;
-  }
-  nextseq_ = nextseq_ + tmp.sequence_length();
-  // cout<<"add "<<tmp.sequence_length()<<endl;//
+      seq_num += tmp.sequence_length();
+      q.push_back( tmp );
+      transmit( tmp );
+      
+      if ( !runnning ) {
+        runnning = true;
+        time_ = 0;
+      }
+      if(window_size_< nextseq_.get_raw() - ( *ackno_ ).get_raw()) break;
 
-  seq_num += tmp.sequence_length();
-  q.push_back( tmp );
-  transmit( tmp );
-  // std::cout << "transmit 1:" << tmp.payload << endl; //
-  if ( !runnning ) {
-    runnning = true;
-    time_ = 0;
+      len = min( len, window_size_ - ( nextseq_.get_raw() - ( *ackno_ ).get_raw() ) );
+
   }
 }
 
@@ -76,13 +85,13 @@ void TCPSender::receive( const TCPReceiverMessage& msg )
   auto ackno = msg.ackno;
   window_size_ = msg.window_size;
   ackno_ = msg.ackno;
+
   uint64_t cnt = 0;
 
   while ( q.size() ) {
     auto tmp = q.front();
     if ( tmp.seqno + tmp.sequence_length() <= ackno ) {
       seq_num -= q.front().sequence_length();
-
       q.pop_front();
       cnt++;
 
@@ -95,13 +104,15 @@ void TCPSender::receive( const TCPReceiverMessage& msg )
     if ( q.size() ) {
       time_ = 0;
       runnning = true;
-      //  std::cout << "q.size() is not 0" << endl; //
+     
     } else {
       runnning = false;
       time_ = 0;
-      //  std::cout << "q.size() is 0 " << endl; //
+    
     }
   }
+
+
 }
 
 void TCPSender::tick( uint64_t ms_since_last_tick, const TransmitFunction& transmit )
