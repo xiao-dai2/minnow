@@ -9,7 +9,7 @@ using namespace std;
 
 void get_URL( const string& host, const string& path )
 {
-  // cerr << "Function called: get_URL(" << host << ", " << path << ")\n";
+  cerr << "Function called: get_URL(" << host << ", " << path << ")\n";
   CS144TCPSocket client = CS144TCPSocket();
   client.connect( Address( host, "http" ) );
   vector<string> req;
