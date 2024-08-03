@@ -25,10 +25,10 @@ void TCPSender::push( const TransmitFunction& transmit )
 
   if ( window_size_ == -1UL && is_first )
     return;
-  //   len = 1;
+    
   if ( over )
-    return; //
-            // cout<<window_size_<<endl;//
+    return; 
+            
   if ( window_size_ == 0 && open ) {
     len = 1;
     open = false;
