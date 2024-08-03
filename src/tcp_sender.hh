@@ -57,12 +57,13 @@ private:
   uint64_t seq_num {};
   bool runnning {};
   uint64_t time_ {};
-  uint64_t window_size_ {};
+  uint64_t window_size_ = -1UL;
   Wrap32 nextseq_;
   std::optional<Wrap32> ackno_ {};
   bool is_first {};
   bool is_finish {};
   bool over {};
+  bool open {};
 
   deque<TCPSenderMessage> q {};
 };
