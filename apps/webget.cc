@@ -12,21 +12,21 @@ void get_URL( const string& host, const string& path )
   cerr << "Function called: get_URL(" << host << ", " << path << ")\n";
   CS144TCPSocket client = CS144TCPSocket();
   client.connect( Address( host, "http" ) );
-  vector<string> req;
 
   string a = "GET " + path + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n" + "\r\n";
-  req.push_back( a );
 
-  client.write( req );
-  string ret;
+  client.write( a );
 
-  client.read( ret );
-
-  while ( ret != "" ) {
-    cout << ret;
-    client.read( ret );
+  client.shutdown(SHUT_WR);
+ 
+  std::string buf;
+  while ( !client.eof() ) {
+    client.read( buf );
+    std::cout << buf;
+    buf.clear();
   }
   client.close();
+
 }
 
 int main( int argc, char* argv[] )
